@@ -46,9 +46,9 @@ namespace Emarketing_API.Controllers
                 return Ok();
 
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500,"Ann Error Occurred While Adding Stock");
+                return StatusCode(500,$"Ann Error Occurred While Adding Stock {ex}");
             }
         }
 
@@ -66,9 +66,9 @@ namespace Emarketing_API.Controllers
                 var result = mapper.Map<IEnumerable<StockWithProductVM>>(stocks);
                 return Ok(result);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Ann Error Occurred While Get Stock");
+                return StatusCode(500,$"Ann Error Occurred While Get Stock {ex}");
             }
         }
 
@@ -95,9 +95,9 @@ namespace Emarketing_API.Controllers
 
                 return Ok(stockWithProductVM);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An Error Occurred While Get Data to Edit Stock");
+                return StatusCode(500,$"An Error Occurred While Get Data to Edit Stock{ex}");
             }
 
         }
@@ -131,9 +131,9 @@ namespace Emarketing_API.Controllers
 
                 return Ok();
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An Error Occurred While  Editing Stock"); 
+                return StatusCode(500,$"An Error Occurred While  Editing Stock {ex}"); 
             }
 
         }
@@ -165,9 +165,9 @@ namespace Emarketing_API.Controllers
                 return Ok();
 
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An Error Occurred While  deleting Stock");
+                return StatusCode(500,$"An Error Occurred While  deleting Stock{ex}");
             }
 
         }

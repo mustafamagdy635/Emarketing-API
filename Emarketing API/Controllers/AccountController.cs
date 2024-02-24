@@ -63,7 +63,7 @@ namespace Emarketing_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal server error");
+                return StatusCode(500,$"Internal server error\n {ex}");
             }
         }
 
@@ -139,7 +139,7 @@ namespace Emarketing_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal server error");
+                return StatusCode(500,$"Internal server error\n {ex}");
             }
 
         }

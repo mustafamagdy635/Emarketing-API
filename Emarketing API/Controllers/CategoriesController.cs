@@ -59,9 +59,11 @@ namespace Emarketing_API.Controllers
                 return Created(url, categories);
 
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Ann Error Occurred While Adding Category");
+                Console.WriteLine($"An error occurred: {ex}");
+
+                return StatusCode(500,$"Ann Error Occurred While Adding Category \n {ex}");
             }
 
         }
@@ -85,9 +87,9 @@ namespace Emarketing_API.Controllers
                 
                    
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An Error Occurred While Find Category");
+                return StatusCode(500,$"An Error Occurred While Find Category \n {ex}");
             }
         }
 
@@ -110,9 +112,9 @@ namespace Emarketing_API.Controllers
 
                 return Ok(category);
             }
-            catch ( Exception Ex)
+            catch ( Exception ex)
             {
-                return StatusCode(500, "An Error Occurred while Find Using name");
+                return StatusCode(500, $"An Error Occurred while Find Using name \n {ex}");
             }
         }
 
@@ -147,9 +149,9 @@ namespace Emarketing_API.Controllers
 
 
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An Error Occurred while Editing.....");
+                return StatusCode(500,$"An Error Occurred while Editing..... \n {ex}");
 
             }
         }
@@ -178,9 +180,9 @@ namespace Emarketing_API.Controllers
                 return StatusCode(StatusCodes.Status204NoContent, "Data Deleted");
 
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An Error Occurred while Deleting.....");
+                return StatusCode(500,$"An Error Occurred while Deleting..... \n {ex}");
 
             }
         }

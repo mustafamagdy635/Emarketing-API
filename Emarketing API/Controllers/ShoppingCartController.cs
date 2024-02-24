@@ -79,9 +79,9 @@ namespace Emarketing_API.Controllers
 
                 
             }
-            catch(Exception Ex)
+            catch(Exception ex)
             {
-                return StatusCode(500, "An Error Occurred While Adding in shoppingCart");
+                return StatusCode(500,$"An Error Occurred While Adding in shoppingCart{ex}");
             }
 
         }

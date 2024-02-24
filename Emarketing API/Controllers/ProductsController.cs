@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Emarketing_API.DataAccess.Repository;
 
 namespace Emarketing_API.Controllers
 {
@@ -17,7 +18,7 @@ namespace Emarketing_API.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper mapper;
 
-        public ProductsController(IUnitOfWork unitOfWork,IMapper mapper)
+        public ProductsController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this._unitOfWork = unitOfWork;
             this.mapper = mapper;
@@ -29,7 +30,7 @@ namespace Emarketing_API.Controllers
         {
             if (!ModelState.IsValid)
             {
-               return BadRequest(ModelState);   
+                return BadRequest(ModelState);
             }
 
             try
@@ -40,8 +41,8 @@ namespace Emarketing_API.Controllers
                 }
 
                 _unitOfWork.repositoryProduct.Add(ProductVM.Products);
-                _unitOfWork.Save();
 
+                _unitOfWork.Save();
 
                 Stocks newStock = new Stocks
                 {
@@ -54,9 +55,9 @@ namespace Emarketing_API.Controllers
 
                 return Ok();
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while adding the product.");
+                return StatusCode(500, $"An error occurred while adding the product...... \n {ex}");
             }
 
         }
@@ -64,53 +65,92 @@ namespace Emarketing_API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-              List<Products> Allbroducts = _unitOfWork.repositoryProduct.GetAll(IncludeProperties: new []{ "brand", "categories" }).ToList();
-            var broductVm = mapper.Map<IEnumerable<ShowProductWithCategoryAndBrandsVM>>(Allbroducts);
+            try
+            {
+                List<Products> Allbroducts = _unitOfWork.repositoryProduct.GetAll(IncludeProperties: new[] { "brand", "categories" }).ToList();
+              
+                var broductVm = mapper.Map<IEnumerable<ShowProductWithCategoryAndBrandsVM>>(Allbroducts);
 
-            return Ok(broductVm);
+                return Ok(broductVm);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while Fetching the product...... \n {ex}");
+            }
+
         }
 
 
-        [HttpGet("{Id:int}",Name ="FindProductById")]
+        [HttpGet("{Id:int}", Name = "FindProductById")]
         public IActionResult Find(int Id)
         {
-            Products product = _unitOfWork.repositoryProduct.Find(u => u.Id == Id, IncludeProperties: new[] { "brand", "categories" });
-            if (product == null)
-                return NotFound();
+            try
+            {
+                if (Id <= 0)
+                {
+                    return BadRequest("Invalid Product ID");
+                }
 
-            var productVM = mapper.Map<ShowProductWithCategoryAndBrandsVM>(product);
-            return Ok(productVM);
+                Products product = _unitOfWork.repositoryProduct.Find(u => u.Id == Id, IncludeProperties: new[] { "brand", "categories" });
+               
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                var productVM = mapper.Map<ShowProductWithCategoryAndBrandsVM>(product);
+
+                return Ok(productVM);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while Fetching product by Id the ...... \n {ex}");
+            }
         }
 
         [HttpPut]
-      
 
-    public IActionResult Edit(int Id, ProductWithCategoryWithBrandVM ProductVM)
+
+        public IActionResult Edit(int Id, ProductWithCategoryWithBrandVM ProductVM)
         {
-            Products Product = _unitOfWork.repositoryProduct.Find(u => u.Id == Id, IncludeProperties: new[] { "brand", "categories" });
-            if (Product == null)
-            {
-                return NotFound();
-            }
-            if (ProductVM == null)
-            {
-                return NotFound();
-            }
-            Product.Name = ProductVM.Products.Name;
-            Product.price = ProductVM.Products.price;
-            Product.Model_yesr = ProductVM.Products.Model_yesr;
-            Product.brand_Id = ProductVM.Products.brand_Id;
-            Product.Category_Id = ProductVM.Products.Category_Id;
-
             try
             {
+                if (Id <= 0)
+                {
+                    return BadRequest("Invalid Product Id");
+                }
+
+                Products Product = _unitOfWork.repositoryProduct.Find(u => u.Id == Id, IncludeProperties: new[] { "brand", "categories" });
+              
+                if (Product == null)
+                {
+                    return NotFound();
+                }
+                if (ProductVM == null)
+                {
+                    return NotFound();
+                }
+                Product.Name = ProductVM.Products.Name;
+
+                Product.price = ProductVM.Products.price;
+
+                Product.Model_yesr = ProductVM.Products.Model_yesr;
+
+                Product.brand_Id = ProductVM.Products.brand_Id;
+
+                Product.Category_Id = ProductVM.Products.Category_Id;
+
                 _unitOfWork.repositoryProduct.Update(Product);
+
                 _unitOfWork.Save();
+
                 return Ok(Product);
+
             }
-            catch(Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An Erorr Occurred while Updating the Product ");
+                return StatusCode(500,$"An Erorr Occurred while Updating the Product..... \n{ex}");
             }
         }
 
@@ -125,33 +165,36 @@ namespace Emarketing_API.Controllers
                 }
 
                 Products DeleteProduct = _unitOfWork.repositoryProduct.Find(u => u.Id == Id);
-                
-                if(DeleteProduct==null)
+
+                if (DeleteProduct == null)
                 {
                     return NotFound("Category Not Found ....");
                 }
 
-                var StockData = _unitOfWork._repositoryStock.Find(U =>U.Product_Id == Id);
-                if(StockData.Quantity > 0)
+                var StockData = _unitOfWork._repositoryStock.Find(U => U.Product_Id == Id);
+
+                if (StockData.Quantity > 0)
                 {
                     return BadRequest("Cannot delete product with existing stock.");
                 }
                 _unitOfWork.repositoryProduct.Delete(DeleteProduct);
+
                 _unitOfWork.Save();
+
                 return StatusCode(StatusCodes.Status204NoContent, "Product deleted successfully.");
 
 
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An Erorr Occurred while Updating the Product ");
+                return StatusCode(500,$"An Erorr Occurred while Updating the Product....\n{ex}");
             }
 
         }
 
-        [HttpGet("/{Id:int}",Name ="Upser")]
+        [HttpGet("/{Id:int}", Name = "Upser")]
 
-        public IActionResult Upser(int ? Id)
+        public IActionResult Upser(int? Id)
         {
             try
             {
@@ -169,16 +212,16 @@ namespace Emarketing_API.Controllers
                     })
 
                 };
-                if (Id==0 || Id == null)
-                {                 
+                if (Id == 0 || Id == null)
+                {
                     return Ok(ProductVM);
                 }
                 ProductVM.Products = _unitOfWork.repositoryProduct.Find(u => u.Id == Id);
                 return Ok(ProductVM.Products);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An Erorr Occurred while used Upser  ");
+                return StatusCode(500,$"An Erorr Occurred while used Upser....\n{ex}  ");
             }
         }
 

@@ -41,9 +41,9 @@ namespace Emarketing_API.Controllers
                 return Ok(ShoppingCartDTO.TotalPrice);
             }
 
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while fitch shopping Cart data");
+                return StatusCode(500,$"An error occurred while fitch shopping Cart data \n {ex}");
             }
         }
 
@@ -88,9 +88,9 @@ namespace Emarketing_API.Controllers
                 return Ok(CartFromDb);
 
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while Adding shopping Cart data");
+                return StatusCode(500,$"An error occurred while Adding shopping Cart data \n {ex}");
             }
         }
         [HttpPost("Minus", Name = "Minus")]
@@ -133,9 +133,9 @@ namespace Emarketing_API.Controllers
                 return Ok();
 
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while Minus shopping Cart data");
+                return StatusCode(500,$"An error occurred while Minus shopping Cart data \n {ex}");
             }
         }
 
@@ -171,9 +171,9 @@ namespace Emarketing_API.Controllers
                 return Ok();
 
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while Minus shopping Cart data");
+                return StatusCode(500,$"An error occurred while Minus shopping Cart data \n {ex}");
             }
         }
 

@@ -52,9 +52,9 @@ namespace Emarketing_API.Controllers
                 }
                 return Ok(brand);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "an Error Occurred while finding the Brand ....  ");
+                return StatusCode(500,$"an Error Occurred while finding the Brand ....\n {ex} ");
             }
 
                 
@@ -83,9 +83,9 @@ namespace Emarketing_API.Controllers
 
                 return Created(url, brand);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An Error Occured While Adding Brand");
+                return StatusCode(500,$"An Error Occured While Adding Brand \n {ex}");
             }   
          }
 
@@ -117,7 +117,7 @@ namespace Emarketing_API.Controllers
             }
             catch(Exception Ex)
             {
-                return StatusCode(500, "An Error Occurred while Editing Data ");
+                return StatusCode(500,$"An Error Occurred while Editing Data \n {ex}");
             }
 
         }
@@ -143,9 +143,9 @@ namespace Emarketing_API.Controllers
 
                 return StatusCode(StatusCodes.Status204NoContent, "Brand Deleted");
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An Errro Occurred while Deleting ");
+                return StatusCode(500,$"An Errro Occurred while Deleting \n {ex} ");
             }
 
 
