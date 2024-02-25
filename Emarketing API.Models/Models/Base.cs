@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Emarketing_API.Models.Models
+namespace Emarketing_API.Models
 {
     public  class Base
     {

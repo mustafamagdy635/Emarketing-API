@@ -1,4 +1,4 @@
-﻿using Emarketing_API.Models.Models;
+﻿using Emarketing_API.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Emarketing_API.Modles.Models
+namespace Emarketing_API.Models
 {
     public class ShoppingCart : Base
     {

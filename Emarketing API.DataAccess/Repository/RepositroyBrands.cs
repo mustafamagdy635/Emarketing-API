@@ -1,6 +1,6 @@
 ﻿using Emarketing_API.DataAccess.Data;
 using Emarketing_API.DataAccess.Repository.IRepository;
-using Emarketing_API.Models.Models;
+using Emarketing_API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

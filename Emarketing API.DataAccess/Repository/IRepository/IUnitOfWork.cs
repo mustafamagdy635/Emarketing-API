@@ -14,6 +14,8 @@ namespace Emarketing_API.DataAccess.Repository.IRepository
         IRepositoryStock _repositoryStock { get; }
         IRepositoryApplicationUser _repositoryApplicationUser { get; }
         IRepositoryShoppingCart _repositoryShoppingCart { get; }
+        IRepositoryOrderDetail _repositoryOrderDetail { get; }
+        IRepositoryOrderHeader _repositoryOrderHeader { get; }
         public void Save();
 
     }

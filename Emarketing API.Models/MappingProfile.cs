@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using Emarketing_AP.Models;
 using Emarketing_API.Models.DTO;
-using Emarketing_API.Models.Models;
+using Emarketing_API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

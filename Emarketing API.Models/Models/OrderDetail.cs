@@ -10,15 +10,20 @@ using System.Threading.Tasks;
 
 namespace Emarketing_API.Models
 {
-    public class Stocks :Base
+    public class OrderDetail:Base
     {
+        [ForeignKey("OrderHeader")]
         [Required]
-        [ForeignKey("products")]
-        public int Product_Id { get; set; }
-
+        public int OrderHeaderId { get; set; }      
         [ValidateNever]
-        public Products? products { get; set; }
+        public OrderHeader OrderHeader { get; set; }
+        [ForeignKey("Product")]
         [Required]
-        public int Quantity { get; set; }
+        public int ProductId { get; set; }    
+        [ValidateNever]
+        public Products Product { get; set; }
+        public int Count { get; set; }
+        public double Price { get; set; }
+
     }
 }

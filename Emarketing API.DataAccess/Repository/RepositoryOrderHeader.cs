@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Emarketing_API.DataAccess.Repository
 {
-    public class RepositoryStock : BaseRepository<Stocks>, IRepositoryStock
+    public class RepositoryOrderHeader : BaseRepository<OrderHeader>, IRepositoryOrderHeader
     {
-        public RepositoryStock(Context db) : base(db)
+        public RepositoryOrderHeader(Context db) : base(db)
         {
         }
     }

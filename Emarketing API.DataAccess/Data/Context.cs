@@ -1,6 +1,4 @@
-﻿using Emarketing_AP.Models;
-using Emarketing_API.Models.Models;
-using Emarketing_API.Modles.Models;
+﻿using Emarketing_API.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -21,5 +19,7 @@ namespace Emarketing_API.DataAccess.Data
         DbSet<Stocks> stocks { get; set; }  
         DbSet<ApplicationUser> applicationUsers { get; set; }
         DbSet<ShoppingCart> shoppingCarts { get; set; }
+        DbSet<OrderDetail> orderDetails { get; set; }
+        DbSet<OrderHeader> orderHeaders { get; set; }
     }
 }

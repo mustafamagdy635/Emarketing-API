@@ -1,5 +1,5 @@
 ﻿using Emarketing_API.DataAccess.Repository.IRepository;
-using Emarketing_API.Models.Models;
+using Emarketing_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -115,7 +115,7 @@ namespace Emarketing_API.Controllers
 
                 return StatusCode(StatusCodes.Status204NoContent, "Date Updated");
             }
-            catch(Exception Ex)
+            catch(Exception ex)
             {
                 return StatusCode(500,$"An Error Occurred while Editing Data \n {ex}");
             }

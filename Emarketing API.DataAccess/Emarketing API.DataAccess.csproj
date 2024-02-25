@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Emarketing API.Models\Emarketing API.Models.csproj" />
+    <ProjectReference Include="..\Emarketing API.Utility\Emarketing API.Utility.csproj" />
   </ItemGroup>
 
 </Project>

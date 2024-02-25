@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using Emarketing_AP.Models;
 using Emarketing_API.Models.DTO;
 using Emarketing_API.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.EntityFrameworkCore.Query;
+using Emarketing_API.Models;
 
 namespace Emarketing_API.Controllers
 {

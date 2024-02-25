@@ -17,6 +17,8 @@ namespace Emarketing_API.DataAccess.Repository
         public IRepositoryStock _repositoryStock { get; private set; }
         public IRepositoryApplicationUser _repositoryApplicationUser { get; private set; }
         public IRepositoryShoppingCart _repositoryShoppingCart { get; private set; }
+        public IRepositoryOrderDetail _repositoryOrderDetail { get; private set; }
+        public IRepositoryOrderHeader _repositoryOrderHeader { get; private set; }
 
 
         public UnitOfWork(Context db) 
@@ -28,6 +30,8 @@ namespace Emarketing_API.DataAccess.Repository
             _repositoryStock = new RepositoryStock(_db);
             _repositoryApplicationUser = new RepositoryApplicationUser(_db);
             _repositoryShoppingCart = new RepositoryShoppingCart(_db);
+            _repositoryOrderDetail = new RepositoryOrderDetail(_db);
+            _repositoryOrderHeader = new RepositoryOrderHeader(_db);
         }
 
 

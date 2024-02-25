@@ -1,4 +1,4 @@
-﻿using Emarketing_API.Models.Models;
+﻿using Emarketing_API.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;

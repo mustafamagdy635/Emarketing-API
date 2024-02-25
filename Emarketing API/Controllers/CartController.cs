@@ -1,7 +1,8 @@
-﻿using Emarketing_AP.Models;
-using Emarketing_API.DataAccess.Repository.IRepository;
+﻿using Emarketing_API.DataAccess.Repository.IRepository;
+using Emarketing_API.Models;
 using Emarketing_API.Models.DTO;
-using Emarketing_API.Modles.Models;
+using Emarketing_API.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -13,11 +14,14 @@ namespace Emarketing_API.Controllers
     public class CartController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+       // [BindProperty]
         public ShoppingCartDTO ShoppingCartDTO { get; set; }
         public CartController(IUnitOfWork unitOfWork)
         {
             this._unitOfWork = unitOfWork;
         }
+
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -29,27 +33,121 @@ namespace Emarketing_API.Controllers
 
                 ShoppingCartDTO = new()
                 {
-                    ShoppingCartList = _unitOfWork._repositoryShoppingCart.GetAll(u => u.ApplicationUser_Id == userId, IncludeProperties: new[] { "Product" }).ToList()
+                    ShoppingCartList = _unitOfWork._repositoryShoppingCart.GetAll(u => u.ApplicationUser_Id == userId,
+                    IncludeProperties: new[] { "Product" }).ToList(),
+                    orderHeader = new()
                 };
                 foreach (var cart in ShoppingCartDTO.ShoppingCartList)
                 {
 
                     cart.Price = GetPriceBasedOnQuantity(cart);
-                    ShoppingCartDTO.TotalPrice += (cart.Price * cart.Count);
+                    ShoppingCartDTO.orderHeader.OrderTotal += (cart.Price * cart.Count);
                 }
 
-                return Ok(ShoppingCartDTO.TotalPrice);
+                return Ok(ShoppingCartDTO.orderHeader.OrderTotal);
             }
 
             catch (Exception ex)
             {
-                return StatusCode(500,$"An error occurred while fitch shopping Cart data \n {ex}");
+                return StatusCode(500, $"An error occurred while fitch shopping Cart data \n {ex}");
             }
         }
 
         private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
         {
             return shoppingCart.Product.price;
+        }
+
+        [HttpGet("Summary",Name = "Summary")]
+        public IActionResult Summary()
+        {
+            try
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                string userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                ShoppingCartDTO = new()
+                {
+                    ShoppingCartList = _unitOfWork._repositoryShoppingCart.GetAll(u => u.ApplicationUser_Id == userId,
+                    IncludeProperties: new[] { "Product" }).ToList(),
+                    orderHeader = new()
+                };
+               ShoppingCartDTO.orderHeader.ApplicationUser= _unitOfWork._repositoryApplicationUser.Find(u => u.Id == userId);
+
+                ShoppingCartDTO.orderHeader.Name = ShoppingCartDTO.orderHeader.ApplicationUser.UserName;
+                ShoppingCartDTO.orderHeader.StreetAddress = ShoppingCartDTO.orderHeader.ApplicationUser.street;
+                ShoppingCartDTO.orderHeader.State = ShoppingCartDTO.orderHeader.ApplicationUser.state;
+                ShoppingCartDTO.orderHeader.City = ShoppingCartDTO.orderHeader.ApplicationUser.city;
+                ShoppingCartDTO.orderHeader.PostalCode = ShoppingCartDTO.orderHeader.ApplicationUser.Zip_Code;
+                ShoppingCartDTO.orderHeader.PhoneNumber = ShoppingCartDTO.orderHeader.ApplicationUser.PhoneNumber;
+
+                foreach (var cart in ShoppingCartDTO.ShoppingCartList)
+                {
+                    cart.Price = GetPriceBasedOnQuantity(cart);
+                    ShoppingCartDTO.orderHeader.OrderTotal += (cart.Price * cart.Count);
+                }
+                return Ok(ShoppingCartDTO.orderHeader);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fitch Summary Cart data \n {ex}");
+            }
+
+        }
+
+
+        [HttpPost("Summary", Name = "Summary")]
+        public IActionResult SummaryPost(ShoppingCartDTO shoppingCartDTO)
+        {
+            try
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                string userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+
+                ShoppingCartDTO.ShoppingCartList = _unitOfWork._repositoryShoppingCart.GetAll(u => u.ApplicationUser_Id == userId,
+                 IncludeProperties: new[] { "Product" }).ToList();
+
+                ShoppingCartDTO.orderHeader.OrderDate = DateTime.Now;
+
+                ShoppingCartDTO.orderHeader.ApplicationUserId = userId;
+
+                ShoppingCartDTO.orderHeader.ApplicationUser = _unitOfWork._repositoryApplicationUser.Find(u => u.Id == userId);
+
+                foreach (var cart in ShoppingCartDTO.ShoppingCartList)
+                {
+                    cart.Price = GetPriceBasedOnQuantity(cart);
+                    ShoppingCartDTO.orderHeader.OrderTotal += (cart.Price * cart.Count);
+                }
+
+                ShoppingCartDTO.orderHeader.PaymentStatus = SD.PaymentStatusPending;
+
+                ShoppingCartDTO.orderHeader.OrderStatus = SD.StatusPending;
+
+                _unitOfWork._repositoryOrderHeader.Add(ShoppingCartDTO.orderHeader);
+
+                _unitOfWork.Save();
+                foreach (var cart in ShoppingCartDTO.ShoppingCartList)
+                {
+                    OrderDetail orderDetail = new OrderDetail()
+                    {
+                        ProductId = cart.Product_Id,
+                        Count=cart.Count,
+                        OrderHeaderId=ShoppingCartDTO.orderHeader.Id,
+                        Price=cart.Price,                      
+                    };
+                    _unitOfWork._repositoryOrderDetail.Add(orderDetail);
+
+                    _unitOfWork.Save();
+
+                }
+
+                return Ok(ShoppingCartDTO.orderHeader);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fitch Summary Cart data \n {ex}");
+            }
+
         }
 
         [HttpPost("Plus", Name = "Plus")]
@@ -77,7 +175,7 @@ namespace Emarketing_API.Controllers
 
                 CartFromDb.Count += 1;
 
-                stock.Quantity   -= 1;
+                stock.Quantity -= 1;
 
                 _unitOfWork._repositoryShoppingCart.Update(CartFromDb);
 
@@ -90,7 +188,7 @@ namespace Emarketing_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500,$"An error occurred while Adding shopping Cart data \n {ex}");
+                return StatusCode(500, $"An error occurred while Adding shopping Cart data \n {ex}");
             }
         }
         [HttpPost("Minus", Name = "Minus")]
@@ -135,7 +233,7 @@ namespace Emarketing_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500,$"An error occurred while Minus shopping Cart data \n {ex}");
+                return StatusCode(500, $"An error occurred while Minus shopping Cart data \n {ex}");
             }
         }
 
@@ -173,7 +271,7 @@ namespace Emarketing_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500,$"An error occurred while Minus shopping Cart data \n {ex}");
+                return StatusCode(500, $"An error occurred while Minus shopping Cart data \n {ex}");
             }
         }
 

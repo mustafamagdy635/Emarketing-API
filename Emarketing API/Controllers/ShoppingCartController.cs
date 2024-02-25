@@ -1,7 +1,6 @@
-﻿using Emarketing_AP.Models;
-using Emarketing_API.DataAccess.Repository.IRepository;
+﻿using Emarketing_API.DataAccess.Repository.IRepository;
+using Emarketing_API.Models;
 using Emarketing_API.Models.DTO;
-using Emarketing_API.Modles.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

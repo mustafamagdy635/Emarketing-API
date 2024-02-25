@@ -8,10 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Emarketing_AP.Models;
-using Emarketing_API.Modles.Models;
 
-namespace Emarketing_API.Models.Models
+namespace Emarketing_API.Models
 {
     public class Products : Base
     {

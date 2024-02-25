@@ -2,7 +2,7 @@
 using AutoMapper;
 using Emarketing_API.DataAccess.Repository.IRepository;
 using Emarketing_API.Models.DTO;
-using Emarketing_API.Models.Models;
+using Emarketing_API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

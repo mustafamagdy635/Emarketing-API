@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-namespace Emarketing_API.Models.Models
+namespace Emarketing_API.Models
 {
     public class Brands : Base
     {

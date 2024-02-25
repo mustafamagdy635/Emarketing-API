@@ -5,7 +5,7 @@ using Emarketing_API.DataAccess.Repository;
 using Emarketing_API.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Emarketing_API.DataAccess;
-using Emarketing_API.Models.Models;
+using Emarketing_API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

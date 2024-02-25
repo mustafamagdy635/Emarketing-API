@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Emarketing_API.DataAccess.Repository.IRepository
 {
-    public interface IRepositoryShoppingCart : IBaseRepository<ShoppingCart>
+    public interface IRepositoryOrderHeader : IBaseRepository<OrderHeader>
     {
     }
 }
