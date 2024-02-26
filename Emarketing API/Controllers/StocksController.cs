@@ -64,6 +64,7 @@ namespace Emarketing_API.Controllers
                 }
 
                 var result = mapper.Map<IEnumerable<StockWithProductVM>>(stocks);
+
                 return Ok(result);
             }
             catch (Exception ex)

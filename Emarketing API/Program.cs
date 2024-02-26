@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Stripe;
 
 namespace Emarketing_API
 {
@@ -24,6 +25,8 @@ namespace Emarketing_API
             builder.Services.AddIdentity<ApplicationUser,IdentityRole>().AddEntityFrameworkStores<Context>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             string ConnctionString=builder.Configuration.GetConnectionString("DefualtConnection");
@@ -99,6 +102,7 @@ namespace Emarketing_API
                 app.UseSwaggerUI();
             }
 
+            StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:Secretkey").Get<string>();
             app.UseAuthorization();
             app.UseAuthorization();
 

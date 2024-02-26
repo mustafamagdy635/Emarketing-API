@@ -95,17 +95,32 @@ namespace Emarketing_API.Controllers
         }
 
 
-        [HttpPost("Summary", Name = "Summary")]
-        public IActionResult SummaryPost(ShoppingCartDTO shoppingCartDTO)
+       
+
+
+        [HttpPost("SummaryPost", Name = "SummaryPost")]
+        public IActionResult SummaryPost()
         {
             try
             {
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 string userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
+                ShoppingCartDTO = new()
+                {
+                    ShoppingCartList = _unitOfWork._repositoryShoppingCart.GetAll(u => u.ApplicationUser_Id == userId,
+                   IncludeProperties: new[] { "Product" }).ToList(),
+                    orderHeader = new()
+                };
+                ShoppingCartDTO.orderHeader.ApplicationUser = _unitOfWork._repositoryApplicationUser.Find(u => u.Id == userId);
 
-                ShoppingCartDTO.ShoppingCartList = _unitOfWork._repositoryShoppingCart.GetAll(u => u.ApplicationUser_Id == userId,
-                 IncludeProperties: new[] { "Product" }).ToList();
+                ShoppingCartDTO.orderHeader.Name = ShoppingCartDTO.orderHeader.ApplicationUser.UserName;
+                ShoppingCartDTO.orderHeader.StreetAddress = ShoppingCartDTO.orderHeader.ApplicationUser.street;
+                ShoppingCartDTO.orderHeader.State = ShoppingCartDTO.orderHeader.ApplicationUser.state;
+                ShoppingCartDTO.orderHeader.City = ShoppingCartDTO.orderHeader.ApplicationUser.city;
+                ShoppingCartDTO.orderHeader.PostalCode = ShoppingCartDTO.orderHeader.ApplicationUser.Zip_Code;
+                ShoppingCartDTO.orderHeader.PhoneNumber = ShoppingCartDTO.orderHeader.ApplicationUser.PhoneNumber;
+
 
                 ShoppingCartDTO.orderHeader.OrderDate = DateTime.Now;
 

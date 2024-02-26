@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Emarketing_API.Utility;
 
 namespace Emarketing_API.Controllers
 {
@@ -19,13 +20,15 @@ namespace Emarketing_API.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
 
-        public AccountController(IUnitOfWork unitOfWork,UserManager<ApplicationUser> userManager,IConfiguration configuration)
+        public AccountController(IUnitOfWork unitOfWork,UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,IConfiguration configuration)
         {
             this._unitOfWork = unitOfWork;
        
             this._userManager = userManager;
+            this._roleManager = roleManager;
             this._configuration = configuration;
         }
 
@@ -55,10 +58,24 @@ namespace Emarketing_API.Controllers
 
                 if (result.Succeeded)
                 {
-                    return Ok(result);
+
+                    var roleExists = await _roleManager.RoleExistsAsync(SD.RoleUser);
+                    if (!roleExists)
+                    {
+                        // Role doesn't exist, create it
+                        await _roleManager.CreateAsync(new IdentityRole(SD.RoleUser));
+                    }
+
+                    // Assign user to role
+                    await _userManager.AddToRoleAsync(user, SD.RoleUser);
+
+                    // Optionally, return a more informative response
+                    return Ok("User registered successfully");
                 }
-               
-                    return BadRequest("An Error Occurred while Adding user");
+
+             
+
+                return BadRequest("An Error Occurred while Adding user");
                 
             }
             catch (Exception ex)

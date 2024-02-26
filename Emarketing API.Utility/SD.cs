@@ -8,6 +8,10 @@ namespace Emarketing_API.Utility
 {
     public class SD
     {
+
+        public const string RoleUser = "User";
+        public const string RoleAdmin = "Admin";
+
         public const string StatusPending = "Pending";
         public const string StatusApproved = "Approved";
         public const string StatusInProcess = "Processing";
