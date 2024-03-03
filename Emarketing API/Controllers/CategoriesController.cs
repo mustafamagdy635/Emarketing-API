@@ -1,10 +1,12 @@
 ﻿using Emarketing_API.DataAccess.Repository.IRepository;
 using Emarketing_API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Emarketing_API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -32,7 +34,7 @@ namespace Emarketing_API.Controllers
                 
             }catch(Exception ex) 
             {
-                return StatusCode(500, "An Error Occurred whil Get Categories");
+                return StatusCode(500, $"An Error Occurred whil Get Categories \n {ex}");
             }
         }
 

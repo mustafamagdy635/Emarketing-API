@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Emarketing_API.DataAccess.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Emarketing_API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -60,7 +62,7 @@ namespace Emarketing_API.Controllers
             }
 
         }
-
+        
         [HttpGet]
         public IActionResult Get()
         {

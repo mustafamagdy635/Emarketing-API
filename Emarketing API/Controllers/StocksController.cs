@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.EntityFrameworkCore.Query;
 using Emarketing_API.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Emarketing_API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class StocksController : ControllerBase

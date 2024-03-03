@@ -11,9 +11,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Emarketing_API.Utility;
-
+using Microsoft.AspNetCore.Authorization;
 namespace Emarketing_API.Controllers
 {
+   
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -64,8 +65,9 @@ namespace Emarketing_API.Controllers
                     {
                         // Role doesn't exist, create it
                         await _roleManager.CreateAsync(new IdentityRole(SD.RoleUser));
+                        await _roleManager.CreateAsync(new IdentityRole(SD.RoleAdmin));
                     }
-
+                  
                     // Assign user to role
                     await _userManager.AddToRoleAsync(user, SD.RoleUser);
 

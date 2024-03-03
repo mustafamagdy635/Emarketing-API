@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Emarketing_API.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class BrandsController : ControllerBase

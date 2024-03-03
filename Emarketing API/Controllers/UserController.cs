@@ -1,12 +1,17 @@
 ﻿using Emarketing_API.DataAccess.Data;
 using Emarketing_API.DataAccess.Repository.IRepository;
 using Emarketing_API.Models;
+using Emarketing_API.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Emarketing_API.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -23,6 +28,25 @@ namespace Emarketing_API.Controllers
             this._roleManager = roleManager;
             this._unitOfWork = unitOfWork;
             this._db = db;
+        }
+
+        [HttpGet("display Roles", Name = "Roles")]
+        public IActionResult Roles()
+        {
+            try
+            {
+                var Roles = _db.Roles.ToList();
+
+                if (Roles == null)
+                {
+                    return BadRequest("No Roles");
+                }
+                return Ok(Roles);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An Error Occurred While Fetch Roles Data \n {ex}");
+            }
         }
 
         [HttpGet("Fetch", Name = "Fetch All User")]
@@ -42,9 +66,10 @@ namespace Emarketing_API.Controllers
                 foreach (var user in applicationUser)
                 {
                     var RoleId = UserRoles.FirstOrDefault(u => u.UserId == user.Id).RoleId;
+
                     user.Role = roles.FirstOrDefault(u => u.Id == RoleId).Name;
 
-                } 
+                }
                 return Ok(applicationUser);
             }
             catch (Exception ex)
@@ -54,7 +79,7 @@ namespace Emarketing_API.Controllers
         }
 
         [HttpGet("{Id}", Name = "FindUser")]
-        public IActionResult Find(string Id)
+        public async Task<IActionResult> Find(string Id)
         {
             try
             {
@@ -66,12 +91,26 @@ namespace Emarketing_API.Controllers
                 ApplicationUser applicationUserObj =
                     _unitOfWork._repositoryApplicationUser.Find(u => u.Id == Id);
 
-
                 if (applicationUserObj == null)
                 {
                     return NotFound();
                 }
 
+                #region   Diplay all roles With user
+                //RoleManagmenDTO RoleDTO = new RoleManagmenDTO()
+                //{
+                //    ApplicationUser = _unitOfWork._repositoryApplicationUser.Find(u => u.Id == Id),
+                //    RoleList = _roleManager.Roles.Select(i => new SelectListItem
+                //    {
+                //        Text = i.Name,
+                //        Value = i.Name
+                //    })
+                //};
+                #endregion
+
+
+                applicationUserObj.Role =
+                      _userManager.GetRolesAsync(_unitOfWork._repositoryApplicationUser.Find(u => u.Id == Id)).GetAwaiter().GetResult().FirstOrDefault();
 
                 return Ok(applicationUserObj);
 
@@ -111,6 +150,44 @@ namespace Emarketing_API.Controllers
             }
         }
 
+        [HttpPost("{Id}", Name = "LockUnLock")]
+        public IActionResult LockUnLock(string Id)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(Id))
+                {
+                    return BadRequest("Invalid User Id");
+                }
+                ApplicationUser applicationUserObj =
+                    _unitOfWork._repositoryApplicationUser.Find(u => u.Id == Id);
+                if (applicationUserObj == null)
+                {
+                    return NotFound();
+                }
+                if(applicationUserObj.LockoutEnd != null && applicationUserObj.LockoutEnd > DateTime.Now)
+                {
+                    applicationUserObj.LockoutEnd = DateTime.Now;
+          
+                }
+                else
+                {
+                    applicationUserObj.LockoutEnd = DateTime.Now.AddYears(5);
+                }
+
+                _unitOfWork._repositoryApplicationUser.Update(applicationUserObj);
+
+                _unitOfWork.Save();
+
+                return Ok(applicationUserObj);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An Error Occurred While Lock or Un Lock users Data\n {ex}");
+            }
+        }
 
     }
+
 }
+
