@@ -19,6 +19,7 @@ namespace Emarketing_API.Controllers
         }
 
 
+
         [HttpGet]
         public IActionResult Get()
         {
